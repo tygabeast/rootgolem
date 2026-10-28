@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rootgolem:block/boundary_marker"
+    }
+  }
+}

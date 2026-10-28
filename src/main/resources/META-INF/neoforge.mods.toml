@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+issueTrackerURL=""
+
+[[mods]]
+modId="rootgolem"
+version="${mod_version}"
+displayName="Root Golem"
+logoFile="rootgolem_icon.png"
+authors="Tygabeast"
+description='''
+An iron-golem-sized Root Golem made of rooted dirt that plants saplings from its inventory inside an area you mark out with Boundary Markers, keeping room between trees. Handles 2x2 trees and saplings from other mods.
+'''
+
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
+[[dependencies.rootgolem]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.0,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.rootgolem]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
