@@ -39,7 +39,7 @@ public final class RootGolemConfig {
                         "Saplings that only grow as 2x2 (dark oak) always use 2x2.")
                 .defineInRange("twoByTwoChance", 0.5D, 0.0D, 1.0D);
         TREE_SPACING = b.comment("Default empty blocks kept between a new sapling and other saplings or tree trunks.",
-                        "Each boundary can override this with a stick (click one of its markers).")
+                        "Each boundary can override this in its Planting Boundary screen (empty-hand click on one of its markers).")
                 .defineInRange("treeSpacing", 8, 0, 16);
         CONSUME_SAPLINGS = b.comment("Whether planting uses up the sapling.")
                 .define("consumeSaplings", true);

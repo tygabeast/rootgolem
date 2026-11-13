@@ -2,6 +2,8 @@ package com.tygabeast.rootgolem;
 
 import com.tygabeast.rootgolem.boundary.BoundaryCommand;
 import com.tygabeast.rootgolem.boundary.BoundaryInfoHandler;
+import com.tygabeast.rootgolem.boundary.BoundaryScreenHandler;
+import com.tygabeast.rootgolem.network.BoundaryScreenPayloads;
 import com.tygabeast.rootgolem.network.BoundaryInfoPayloads;
 import com.tygabeast.rootgolem.boundary.BoundaryMarkerBlock;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -89,10 +91,12 @@ public final class RootGolemMod {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent e) -> {
             BoundarySync.forget(e.getEntity());
             BoundaryInfoHandler.forget(e.getEntity().getUUID());
+            BoundaryScreenHandler.forget(e.getEntity().getUUID());
         });
         NeoForge.EVENT_BUS.addListener((ServerStoppedEvent e) -> {
             BoundarySync.clear();
             BoundaryInfoHandler.clear();
+            BoundaryScreenHandler.clear();
         });
         NeoForge.EVENT_BUS.addListener((BlockEvent.BreakEvent e) -> BoundaryMarkerBlock.onBreak(e));
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> BoundaryCommand.register(e.getDispatcher()));
@@ -118,11 +122,15 @@ public final class RootGolemMod {
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
         // The handler only stores plain data in a common class; rendering it is client-only code.
-        var registrar = event.registrar("4");
+        var registrar = event.registrar("5");
         registrar.playToClient(BoundarySyncPayload.TYPE, BoundarySyncPayload.STREAM_CODEC,
                 (payload, ctx) -> ClientBoundaryData.set(payload));
         registrar.playToClient(BoundaryInfoPayloads.Info.TYPE, BoundaryInfoPayloads.Info.STREAM_CODEC,
                 (payload, ctx) -> ClientBoundaryData.setInfo(payload));
+        registrar.playToClient(BoundaryScreenPayloads.Open.TYPE, BoundaryScreenPayloads.Open.STREAM_CODEC,
+                (payload, ctx) -> ClientBoundaryData.openScreen(payload));
+        registrar.playToServer(BoundaryScreenPayloads.SetSpacing.TYPE, BoundaryScreenPayloads.SetSpacing.STREAM_CODEC,
+                BoundaryScreenHandler::handleSetSpacing);
         registrar.playToServer(BoundaryInfoPayloads.Request.TYPE, BoundaryInfoPayloads.Request.STREAM_CODEC,
                 BoundaryInfoHandler::handle);
     }

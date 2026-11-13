@@ -6,7 +6,10 @@ Run from anywhere:  python3 tools/gen.py   (needs Python 3 and Pillow)
 import json
 import os
 
+from PIL import Image
+
 import golem_texture
+import gui_texture
 import icon_render
 import marker_texture
 
@@ -52,13 +55,33 @@ write_json(f'assets/{MOD}/lang/en_us.json', {
     f'subtitles.{MOD}.root_golem.death': 'Root Golem dies',
     f'subtitles.{MOD}.root_golem.step': 'Root Golem walks',
     f'subtitles.{MOD}.root_golem.plant': 'Root Golem plants a sapling',
+    f'screen.{MOD}.title': 'Planting Boundary',
+    f'screen.{MOD}.map_caption': 'Markers, trees, golems, you',
+    f'screen.{MOD}.markers': 'Markers',
+    f'screen.{MOD}.area': 'Area',
+    f'screen.{MOD}.area_value': '%s blocks',
+    f'screen.{MOD}.size': 'Size',
+    f'screen.{MOD}.size_value': '%s x %s',
+    f'screen.{MOD}.owner': 'Owner',
+    f'screen.{MOD}.nobody': 'nobody',
+    f'screen.{MOD}.golems': 'Golems',
+    f'screen.{MOD}.golems_none': 'none',
+    f'screen.{MOD}.golems_working': '%s working',
+    f'screen.{MOD}.golems_full': '%s working, %s full',
+    f'screen.{MOD}.spacing': 'Tree spacing',
+    f'screen.{MOD}.spacing_line': '%s empty blocks between trees',
+    f'screen.{MOD}.spacing_line_default': 'Default: %s empty blocks between trees',
+    f'screen.{MOD}.room': 'Room for about %s more trees',
+    f'screen.{MOD}.room_one': 'Room for about 1 more tree',
+    f'screen.{MOD}.room_none': 'No room for more trees',
+    f'screen.{MOD}.read_only': 'Only %s can change this',
+    f'screen.{MOD}.preset_default_label': 'Default',
+    f'screen.{MOD}.preset.default': 'Server default (%s blocks)',
+    f'screen.{MOD}.preset.2': 'Dense forest',
+    f'screen.{MOD}.preset.4': 'Forest',
+    f'screen.{MOD}.preset.8': 'Spaced',
+    f'screen.{MOD}.preset.12': 'Orchard',
     f'message.{MOD}.not_owner': 'This boundary belongs to %s',
-    f'message.{MOD}.spacing': 'Tree spacing for this boundary: %s',
-    f'spacing.{MOD}.default': 'server default (%s blocks)',
-    f'spacing.{MOD}.2': '%s blocks (dense forest)',
-    f'spacing.{MOD}.4': '%s blocks (forest)',
-    f'spacing.{MOD}.8': '%s blocks (spaced)',
-    f'spacing.{MOD}.12': '%s blocks (orchard)',
     f'hud.{MOD}.to_marker': 'Marker %s: %s / %s blocks',
     f'hud.{MOD}.to_next': 'Next marker (%s): %s / %s blocks',
     f'hud.{MOD}.to_first': 'Back to marker %s: %s / %s blocks',
@@ -72,7 +95,6 @@ write_json(f'assets/{MOD}/lang/en_us.json', {
     f'message.{MOD}.marker.close_too_far': 'The last marker is too far from the first to close (max %s blocks)',
     f'message.{MOD}.marker.closed': 'Boundary closed with %s markers - right-click a Root Golem with a marker to assign it here',
     f'message.{MOD}.marker.info_open': 'Marker %s of %s - boundary still open',
-    f'message.{MOD}.marker.info_closed': 'Marker %s of %s - boundary closed',
     f'message.{MOD}.marker.too_many': 'Boundary already has %s markers',
     f'message.{MOD}.marker.inserted': 'Marker inserted - boundary now has %s markers',
     f'message.{MOD}.marker.selected_closed': 'Selected marker %s of %s - new markers will be inserted after it. Right-click a Root Golem with a marker to assign it here',
@@ -189,6 +211,10 @@ save_png(eyes, f'assets/{MOD}/textures/entity/root_golem_eyes.png')
 icon_render.render(os.path.join(ROOT, f'assets/{MOD}/textures/entity/root_golem.png'),
                    os.path.join(ROOT, f'assets/{MOD}/textures/entity/root_golem_eyes.png'),
                    os.path.join(ROOT, f'{MOD}_icon.png'))
+
+# Planting Boundary screen (frame, board, buttons); uses the icon above for the golem's head.
+save_png(gui_texture.build(Image.open(os.path.join(ROOT, f'{MOD}_icon.png')).convert('RGBA')),
+         f'assets/{MOD}/textures/gui/boundary.png')
 
 # Boundary marker block texture and inventory icon (see marker_texture.py).
 save_png(marker_texture.block(), f'assets/{MOD}/textures/block/boundary_marker.png')

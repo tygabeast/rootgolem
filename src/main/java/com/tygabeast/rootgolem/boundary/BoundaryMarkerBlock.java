@@ -15,7 +15,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -34,7 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  *   inserted after it, which is how an existing boundary is expanded. The selection is also what
  *   a golem gets assigned to when right-clicked with a marker.
  * - Sneak while placing to start a separate boundary.
- * - Clicking a marker with a stick cycles the boundary's tree spacing preset.
+ * - Clicking a marker of a closed boundary with an empty hand opens the Planting Boundary screen.
  * - With ownerOnly on, only the boundary's owner (and ops) may change or break it.
  */
 public class BoundaryMarkerBlock extends Block {
@@ -122,11 +121,6 @@ public class BoundaryMarkerBlock extends Block {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                               InteractionHand hand, BlockHitResult hit) {
-        if (stack.is(Items.STICK)) {
-            // Stick: cycle this boundary's tree spacing preset.
-            if (!level.isClientSide) cycleSpacing((ServerLevel) level, pos, (ServerPlayer) player);
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
-        }
         if (!stack.is(RootGolemMod.BOUNDARY_MARKER_ITEM.get())) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -142,31 +136,17 @@ public class BoundaryMarkerBlock extends Block {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide) return InteractionResult.SUCCESS;
         ServerLevel sl = (ServerLevel) level;
-        if (!tryClose(sl, pos, (ServerPlayer) player)) {
+        ServerPlayer sp = (ServerPlayer) player;
+        if (!tryClose(sl, pos, sp)) {
             Boundary b = BoundaryData.get(sl).atMarker(pos);
-            if (b != null) {
-                player.displayClientMessage(Component.translatable(b.isClosed()
-                        ? "message.rootgolem.marker.info_closed" : "message.rootgolem.marker.info_open",
+            if (b != null && b.isClosed()) {
+                BoundaryScreenHandler.open(sp, sl, b, pos);       // Planting Boundary screen
+            } else if (b != null) {
+                player.displayClientMessage(Component.translatable("message.rootgolem.marker.info_open",
                         b.points.indexOf(pos) + 1, b.points.size()), true);
             }
         }
         return InteractionResult.CONSUME;
-    }
-
-    private static void cycleSpacing(ServerLevel level, BlockPos pos, ServerPlayer player) {
-        BoundaryData data = BoundaryData.get(level);
-        Boundary b = data.atMarker(pos);
-        if (b == null || !BoundaryAccess.tryEdit(player, level, b)) return;
-        data.cycleSpacing(b);
-        level.playSound(null, pos, SoundEvents.AZALEA_LEAVES_PLACE, SoundSource.BLOCKS, 0.8F, 1.2F);
-        player.displayClientMessage(Component.translatable("message.rootgolem.spacing", spacingLabel(b)), true);
-    }
-
-    /** "8 blocks (spaced)" or "server default (8 blocks)". */
-    public static Component spacingLabel(Boundary b) {
-        return b.usesDefaultSpacing()
-                ? Component.translatable("spacing.rootgolem.default", b.spacing())
-                : Component.translatable("spacing.rootgolem." + b.spacing(), b.spacing());
     }
 
     private static void select(ServerLevel level, BlockPos pos, ServerPlayer player) {

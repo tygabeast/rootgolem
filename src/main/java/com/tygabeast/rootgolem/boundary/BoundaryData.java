@@ -127,16 +127,6 @@ public final class BoundaryData extends SavedData {
         changed();
     }
 
-    /** Moves the boundary to the next spacing preset and returns the new raw value (-1 = default). */
-    int cycleSpacing(Boundary b) {
-        int[] p = Boundary.SPACING_PRESETS;
-        int i = 0;
-        while (i < p.length && p[i] != b.spacing) i++;
-        b.spacing = p[(i + 1) % p.length];
-        changed();
-        return b.spacing;
-    }
-
     // ---- golem status (not saved) ---------------------------------------------------------------
     // Golems report in about once a second while they tick; reports older than 5 seconds are dropped,
     // so the counts cover golems that are currently loaded and working.

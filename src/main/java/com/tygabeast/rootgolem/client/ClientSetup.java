@@ -1,6 +1,7 @@
 package com.tygabeast.rootgolem.client;
 
 import com.tygabeast.rootgolem.RootGolemMod;
+import com.tygabeast.rootgolem.network.ClientBoundaryData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
@@ -12,6 +13,7 @@ public final class ClientSetup {
     private ClientSetup() {}
 
     public static void init(IEventBus modBus) {
+        ClientBoundaryData.screenOpener = BoundaryScreen::show;
         modBus.addListener(ClientSetup::onLayers);
         modBus.addListener(ClientSetup::onRenderers);
         NeoForge.EVENT_BUS.addListener(BoundaryParticles::onClientTick);

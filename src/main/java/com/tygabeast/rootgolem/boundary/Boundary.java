@@ -15,8 +15,8 @@ import net.minecraft.core.BlockPos;
  * {@link #contains} is a cheap box test plus one pass over the vertices.
  */
 public final class Boundary {
-    /** Tree spacing presets a stick cycles through; -1 means "use the server's treeSpacing". */
-    static final int[] SPACING_PRESETS = {-1, 2, 4, 8, 12};
+    /** Tree spacing presets offered by the Planting Boundary screen; -1 means "use the server's treeSpacing". */
+    public static final int[] SPACING_PRESETS = {-1, 2, 4, 8, 12};
 
     public final UUID id;
     final List<BlockPos> points = new ArrayList<>();

@@ -15,17 +15,24 @@ Craft **Boundary Markers** from a stick, a dirt block and any sapling (shapeless
 - **Distance counter:** while holding a marker, the distance from the spot you're aiming at to your current marker shows under the crosshair (e.g. `Marker 4: 37.5 / 64 blocks`). It turns yellow past 80% of the limit and red when too far. A second line shows the other edge that must also fit: back to marker 1 while building an open boundary, or on to the next marker when inserting into an existing one.
 - **Marker info:** aim at any marker to see, under the crosshair, its number, the boundary's size, tree spacing and owner, and how many golems are working there. The golem line also says if any of them have found no room lately.
 - **Direction arrows:** in the distance counter, an arrow points toward the marker when it isn't roughly ahead of you.
-- Click any marker with an empty hand to see its number and whether its boundary is closed.
+- Click a marker of an **open** boundary with an empty hand to see its number. On a closed boundary, an empty-hand click opens the **Planting Boundary** screen (below).
 - Breaking a marker joins its two neighbours together. If a boundary drops below 3 markers, it reopens.
 - Limits (configurable): markers can be up to 64 blocks apart, a boundary can be up to 128 blocks across, and a boundary can have up to 64 markers.
 
-### Tree spacing per boundary
-Click any marker of a boundary with a **stick** to cycle its tree spacing:
-- server default (`treeSpacing`, 8)
-- 2 blocks (dense forest)
-- 4 blocks (forest)
-- 8 blocks (spaced)
-- 12 blocks (orchard)
+### Planting Boundary screen
+Right-click any marker of a **closed** boundary with an empty hand. The screen shows:
+- **A map** of the boundary: numbered markers, the trees and saplings inside it, golems working there, and an arrow for you. It is scanned once when the screen opens.
+- **Details:** number of markers, planting area in blocks, size, owner and golems (and how many have found no room).
+- **Tree spacing:** five presets, applied straight away:
+  - Default: the server's `treeSpacing` (8 unless changed)
+  - 2 blocks (dense forest)
+  - 4 blocks (forest)
+  - 8 blocks (spaced)
+  - 12 blocks (orchard)
+
+  Under the buttons, the screen says how many empty blocks are kept between trees and roughly how many more trees fit at that spacing.
+
+Players who can't edit the boundary see the same screen read-only, with greyed buttons and a note saying who owns it. The server checks ownership too. The screen closes if you move more than 12 blocks from the marker.
 
 ### Ownership
 A boundary belongs to the player who started it. With `ownerOnly` on (the default), only the owner and operators can extend, close, re-space or break it, assign golems to it, or open, feed or reassign the golems tending it. Boundaries made before 1.3.0, or by command, are unowned. The first player to edit one claims it, and ops can change owners with `/rootgolem boundary owner`. Explosions and other non-player causes can still break markers; use a claims mod if you need full protection.
@@ -107,6 +114,12 @@ Per-world server config: `serverconfig/rootgolem-server.toml`. It covers plantin
 
 ## Building from source
 Requires Java 21 and Gradle 8.x (tested with 8.14). Run `gradle build`; the jar is written to `build/libs/`. `tools/gen.py` regenerates the lang, sound, model, blockstate, loot, recipe and tag files and all textures; it needs Python 3 and Pillow.
+
+## 1.5.0 changes
+- **New: Planting Boundary screen.** Right-click a marker of a closed boundary with an empty hand to see a map of the boundary, its details, and the tree spacing presets. It is themed to match the golem: rooted-dirt frame, moss and azalea, dark oak board, wooden buttons that grow moss when selected.
+- **Removed: stick spacing.** Clicking a marker with a stick no longer changes spacing; use the screen instead. `/rootgolem boundary spacing` still works for ops.
+- **Network:** protocol version 5, so clients and servers must both run 1.5.0.
+- **Cleanup:** removed the stick-era lang keys and code (`cycleSpacing`, spacing labels), updated the config comment, checked for unused imports and resources.
 
 ## 1.4.1 changes
 - **New: mod icon** in the mod list, a render of the Root Golem's head.

@@ -21,6 +21,14 @@ public final class ClientBoundaryData {
         return i != null && i.marker().equals(pos) ? i : null;
     }
 
+    /** Set by the client setup; opens the Planting Boundary screen. Null on dedicated servers. */
+    public static volatile java.util.function.Consumer<BoundaryScreenPayloads.Open> screenOpener;
+
+    public static void openScreen(BoundaryScreenPayloads.Open payload) {
+        var opener = screenOpener;
+        if (opener != null) opener.accept(payload);
+    }
+
     private ClientBoundaryData() {}
 
     public static void set(BoundarySyncPayload payload) {
